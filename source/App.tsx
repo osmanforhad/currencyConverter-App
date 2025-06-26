@@ -6,10 +6,12 @@
  */
 
 import {
-  SafeAreaView,
+  FlatList,
+  Pressable,
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 
@@ -53,12 +55,42 @@ function App() {
   }
 
   return (
-    <SafeAreaView>
+    <>
       <StatusBar />
-      <View>
-        <Text>1</Text>
+      <View style={styles.container}>
+        <View style={styles.topContainer}>
+          <View style={styles.bdtContainer}>
+            <Text style={styles.bdt}>৳</Text>
+            <TextInput
+              maxLength={14}
+              value={inputValue}
+              clearButtonMode='always' //only for iOS
+              onChangeText={setInputValue}
+              keyboardType='number-pad'
+              placeholder='Enter amount in BDT'
+            />
+          </View>
+          {resultValue && (
+            <Text style={styles.resultTxt}>
+              {resultValue}
+            </Text>
+          )}
+        </View>
+        <View style={styles.bottomContainer}>
+          <FlatList
+            numColumns={3}
+            data={currencyByBDT}
+            keyExtractor={item => item.name}
+            renderItem={({ item }) => (
+              <Pressable style={[styles.button, targetCurrency === item.name && styles.selected]}
+                onPress={() => buttonPressed(item)}>
+                <CurrencyButton {...item} />
+              </Pressable>
+            )}
+          />
+        </View>
       </View>
-    </SafeAreaView>
+    </>
   );
 }
 
@@ -77,14 +109,14 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontWeight: '800',
   },
-  rupee: {
+  bdt: {
     marginRight: 8,
 
     fontSize: 22,
     color: '#000000',
     fontWeight: '800',
   },
-  rupeesContainer: {
+  bdtContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
